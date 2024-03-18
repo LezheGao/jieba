@@ -5,7 +5,7 @@ jieba
 "Jieba" (Chinese for "to stutter") Chinese text segmentation: built to be the best Python Chinese word segmentation module.
 
 - _Scroll down for English documentation._
-
+-向下滾動查看中文（繁體）檔案（_S）_
 
 特点
 ========
@@ -786,3 +786,40 @@ Segmentation speed
 * 400 KB / Second in Default Mode
 * Test Env: Intel(R) Core(TM) i7-2600 CPU @ 3.4GHz；《围城》.txt
 
+--------------------
+jieba
+========
+“結巴”中文分詞：做最好的Python中文分詞組件
+特點
+========
+*支持四種分詞模式：
+*精確模式，試圖將句子最精確地切開，適合文字分析；
+*全模式，把句子中所有的可以成詞的詞語都掃描出來，速度非常快，但是不能解决歧義；
+*搜尋引擎模式，在精確模式的基礎上，對長詞再次切分，提高召回率，適合用於搜尋引擎分詞。
+* paddle模式，利用PaddlePaddle深度學習框架，訓練序列標注（雙向GRU）網絡模型實現分詞。 同時支持詞性標注。 paddle模式使用需安裝paddlepaddle-tiny，`pip install paddlepaddle-tiny==1.6.1`。 現時paddle模式支持jieba v0.40及以上版本。 jieba v0.40以下版本，請陞級jieba，`pip install jieba --upgrade`。 [PaddlePaddle官網]（ https://www.paddlepaddle.org.cn/ ）
+*支持繁體分詞
+*支持自定義詞典
+* MIT授權協議
+安裝說明
+=======
+程式碼對Python 2/3均相容
+*全自動安裝：`easy_install jieba`或者`pip install jieba` / `pip3 install jieba`
+*半自動安裝：先下載 http://pypi.python.org/pypi/jieba/ ，解壓後運行`python setup.py install`
+*手動安裝：將jieba目錄放置於目前的目錄或者site-packages目錄
+*通過`import jieba`來引用
+*如果需要使用paddle模式下的分詞和詞性標注功能，請先安裝paddlepaddle-tiny，`pip install paddlepaddle-tiny==1.6.1`。
+算灋
+========
+*基於首碼詞典實現高效的詞圖掃描，生成句子中漢字所有可能成詞情况所構成的有向無環圖（DAG）
+*採用了動態規劃查找最大概率路徑，找出基於詞頻的最大切分組合
+*對於未登錄詞，採用了基於漢字成詞能力的HMM模型，使用了Viterbi算灋
+主要功能
+=======
+1.分詞
+--------
+* `jieba.cut`方法接受四個輸入參數：需要分詞的字串； cut_all參數用來控制是否採用全模式； HMM參數用來控制是否使用HMM模型； use_paddle參數用來控制是否使用paddle模式下的分詞模式，paddle模式採用延遲加載管道，通過enable_paddle介面安裝paddlepaddle-tiny，並且import相關程式碼；
+* `jieba.cut_for_search`方法接受兩個參數：需要分詞的字串； 是否使用HMM模型。 該方法適合用於搜尋引擎構建倒排索引的分詞，細微性比較細
+*待分詞的字串可以是unicode或UTF-8字串、GBK字串。 注意：不建議直接輸入GBK字串，可能無法預料地錯誤解碼成UTF-8
+* `jieba.cut`以及`jieba.cut_for_search`返回的結構都是一個可反覆運算的generator，可以使用for迴圈來獲得分詞後得到的每一個詞語（unicode），或者用
+* `jieba.lcut`以及`jieba.lcut_for_search`直接返回list
+* `jieba. Tokenizer（dictionary=DEFAULT_DICT）`新建自定義分詞器，可用於同時使用不同詞典。` jieba.dt`為默認分詞器，所有全域分詞相關函數都是該分詞器的映射。
